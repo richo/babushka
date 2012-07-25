@@ -308,6 +308,55 @@ describe GitRepo, '#ahead?' do
   end
 end
 
+describe GitRepo, '#ahead_of_remote?' do
+  before(:all) {
+    stub_repo 'a'
+    cd(tmp_prefix / 'repos/a') {
+      shell "git checkout HEAD^0"
+    }
+    stub_repo 'b'
+    cd(tmp_prefix / 'repos/b') {
+      shell "git checkout -b topic"
+      shell "git remote add a ../a"
+    }
+  }
+  subject { Babushka::GitRepo.new(tmp_prefix / 'repos/b') }
+  it "should have a local topic branch" do
+    subject.current_branch.should == 'topic'
+  end
+  it "should return true if the current branch has no remote" do
+    subject.remote_branch_exists?.should be_false
+    subject.should be_ahead
+  end
+  context "when remote branch exists" do
+    before(:all) {
+      cd(tmp_prefix / 'repos/b') {
+        shell "git push a topic"
+        shell 'echo "Ch-ch-ch-changes" >> content.txt'
+        shell 'git commit -a -m "Changes!"'
+      }
+    }
+    it "should have a local topic branch" do
+      subject.current_branch.should == 'topic'
+    end
+    it "should return true if there are unpushed commits on the current branch" do
+      subject.remote_branch_exists?.should be_true
+      subject.should be_ahead_of_remote("a")
+    end
+    context "when the branch is fully pushed" do
+      before {
+        cd(tmp_prefix / 'repos/b') {
+          shell "git push a topic"
+        }
+      }
+      it "should not be ahead" do
+        subject.remote_branch_exists?.should be_true
+        subject.should_not be_ahead_of_remote("a")
+      end
+    end
+  end
+end
+
 describe GitRepo, '#behind?' do
   before(:all) {
     stub_repo 'a'
