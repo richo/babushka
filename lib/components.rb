@@ -78,5 +78,6 @@ module Babushka
     dep_context
     meta_dep
     meta_dep_context
+    sudo_process
   ]
 end

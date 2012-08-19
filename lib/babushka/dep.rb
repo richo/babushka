@@ -65,6 +65,7 @@ module Babushka
         @dep_source = source
         @load_path = Base.sources.current_load_path
         @dep_source.deps.register self
+        @sudo = $sudo_pipe && opts[:sudo]
       end
     end
 
@@ -225,7 +226,12 @@ module Babushka
     # webserver is running, for example by using `netstat` to check that
     # something is listening on port 80.
     def process with_opts = {}
-      Base.task.cache { process_with_caching(with_opts) }
+      if @sudo
+        $sudo_pipe.write(name) rescue nil
+        # $sudo_pipe.flush
+      else
+        Base.task.cache { process_with_caching(with_opts) }
+      end
     end
 
     private
