@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export RBENV_VERSION=1.9.3-p194
+
+set -e
+
+bundle install
+bundle exec rake spec
