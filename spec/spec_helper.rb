@@ -68,9 +68,9 @@ module Babushka
   end
 
   class Logging
-    def self.print_log message, printable, as
-      # Don't log while running specs.
-    end
+    # def self.print_log message, printable, as
+    #   # Don't log while running specs.
+    # end
   end
 
   class BugReporter
