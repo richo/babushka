@@ -95,7 +95,7 @@ dep 'in path.babushka', :from, :path do
 end
 
 dep 'installed.babushka', :from, :path do
-  from.default!("https://github.com/benhoskings/babushka.git")
+  from.default!("https://github.com/99designs/babushka.git")
 
   requires 'ruby', 'git'
   setup {
