@@ -14,11 +14,11 @@ Installing is really easy. All it takes is one command, and it can be the first 
 
 If you have curl (OS X):
 
-    bash -c "`curl babushka.me/up`"
+    bash -c "`curl https://s3.amazonaws.com/99designs-babushka/bootstrap`"
 
 If you have wget (Ubuntu):
 
-    bash -c "`wget -O - babushka.me/up`"
+    bash -c "`wget -O - https://s3.amazonaws.com/99designs-babushka/bootstrap`"
 
 Babushka should run on any Unix. OS X and Ubuntu are fully supported, including their respective package managers, homebrew and apt. There is some yum (RedHat/Fedora/CentOS) and pacman (Arch) support, but I'm not familiar with those systems so it might be incomplete. Patches are most welcome.
 
