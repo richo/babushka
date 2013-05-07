@@ -4,14 +4,15 @@ meta :visudo do
   accepts_value_for :line
   template {
     setup {
-      @line_pattern = Regexp.new(line.gsub(/\s*/, "\\s*"))
+      @line_pattern = Regexp.new(Regexp.escape(line.gsub(/\s+/, " ")))
     }
     met? {
       @current_content = sudo("cat /etc/sudoers")
-      @line_pattern =~ @current_content
+      @line_pattern =~ @current_content.gsub(/\s+/, " ")
     }
     meet {
       tmpfile = Tempfile.new('sudoers')
+      tmpfile.chmod(0440)
       tmpfile.write(@current_content)
       # Ensure trailing newline
       tmpfile.write("\n")
@@ -20,6 +21,7 @@ meta :visudo do
       unless shell("visudo -c -f #{tmpfile.path}")
         unmeetable! "Your changes to sudoers are invalid"
       end
+      sudo("chown 0:0 '#{tmpfile.path}'")
       sudo("mv '#{tmpfile.path}' /etc/sudoers")
     }
   }
